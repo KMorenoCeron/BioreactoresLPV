@@ -1,11 +1,8 @@
-%% =====================================================================
+
 %  LAZO CERRADO LPV - ENFOQUE w  (modular, sin funciones)
 %  Observador PI -> optimizador por w -> scheduling -> controlador LPV
-%  --------------------------------------------------------------------
-%  Clave: el punto de operacion sale de  w = A + k*S_hat  (NO divide por D),
-%  por eso NO se rompe en la bajada grande 90->40 como el Sin_hat=S+phi/D.
-%  Mas slew asimetrico (D baja lento) para que no se desplome al piso.
-%  Prueba: perfil del paper (65/75/60/90/40), 365 d, Ain=50.
+%   El punto de operacion sale de  w = A + k*S_hat  (NO divide por D),
+%   Perfil del paper (65/75/60/90/40), 365 d, Ain=50.
 
 clear; clc;
 

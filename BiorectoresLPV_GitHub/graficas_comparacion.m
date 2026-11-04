@@ -1,28 +1,24 @@
-%% ============================================================
-%  GRAFICAS DE COMPARACION (LPV, enfoque w) - AUTOCONTENIDO
-%  ------------------------------------------------------------
+
+%  GRAFICAS DE COMPARACION (LPV, enfoque w) 
 %  Lazo cerrado con el optimizador por w (A + k*S_hat, sin phi/D),
-%  por eso NO se rompe en la bajada grande. Slew asimetrico.
-%  Tres figuras de comparacion:
 %     FIG 1 : ESTIMACION   -> Z, S, A  real vs estimado/objetivo
 %     FIG 2 : PRODUCCION   -> P_A vs P_A,max
 %     FIG 3 : ACCION DE CONTROL -> D aplicada, D_op y correccion
 %  Perfil de Sin (~365 d): 65/75/60/90/50.
-%  Estilo: script integrado + funciones al final, Euler.
-% ============================================================
+
 clear; clc; close all;
 
-%% ---------- Parametros ----------
+%%  Parametros 
 par.alpha=0.16; par.mu_max=0.38; par.kS=24.0; par.k=3.80; par.Ain=50.0;
 tau = 5.76/(60*24);
 
-%% ---------- Ganancias PI de tasa (Bloque 1) ----------
+%%  Ganancias PI de tasa (Bloque 1) 
 Sin_nom=60.0;
 [Dop_nom,~,~,~] = punto_operacion_true(Sin_nom,par);
 p_est=[-1.5 -2.5];
 obs.l1=-(p_est(1)+p_est(2))-Dop_nom;  obs.l2=(p_est(1)*p_est(2))/par.k;
 
-%% ---------- Ganancias LPV (Bloque 4) ----------
+%%  Ganancias LPV (Bloque 3) 
 if exist('lpv_gains.mat','file')==2
     S = load('lpv_gains.mat');
     K.K11=S.K11; K.K21=S.K21; K.K12=S.K12; K.K22=S.K22;
@@ -38,12 +34,12 @@ else
 end
 Dsat=[0.01 1.2];
 
-%% ---------- Clamps del optimizador y slew ----------
+%%  Clamps del optimizador y slew, permite que no bajé de golpe, representativo del sistema
 w_min=90; w_max=460;  D_min=0.10; D_max=1.20;
 t_ctrl=25.0; tau_ref=3.0;
 dD_up=0.8; dD_dn=0.05;        % D sube rapido, baja lento (clave)
 
-%% ---------- Config simulacion ----------
+%%  Config simulacion 
 Tfin=365; N=round(Tfin/tau); t=(0:N-1)*tau;
 
 % Condiciones iniciales
@@ -58,7 +54,7 @@ Sin_=zeros(1,N); A_=zeros(1,N); D_=zeros(1,N); Dop_=zeros(1,N);
 S_=zeros(1,N); Z_=zeros(1,N); Zh_=zeros(1,N); Sh_=zeros(1,N);
 Aop_=zeros(1,N); PA_=zeros(1,N); PAmax_=zeros(1,N);
 
-%% ---------- Lazo ----------
+%%  Lazo 
 for kk=1:N
     tk=t(kk); Sin_true=perfil_Sin(tk);
     x = x + tau*modelo_df(x,D,Sin_true,par);  A=x(3);
@@ -95,12 +91,12 @@ for kk=1:N
     [Dm,~,Am,~]=punto_operacion_true(Sin_true,par); PAmax_(kk)=Am*Dm;
 end
 
-%% ---------- Metricas ----------
+%%  Metricas 
 m=t>=t_ctrl;
 fprintf('Eficiencia media P_A/P_A,max = %.2f %%\n', 100*mean(PA_(m)./PAmax_(m)));
 fprintf('TV(D) = %.2f   D en [%.3f, %.3f]\n', sum(abs(diff(D_(m)))), min(D_), max(D_));
 
-%% ---------- Curvas del paper (DIGITALIZADAS a ojo, APROXIMADAS) ----------
+%%  Curvas del paper (DIGITALIZADAS a ojo, APROXIMADAS) 
 tgrid=0:0.25:365;
 tD_ST=[0 50 51 60 90 96 100 108 180 181 190 270 271 277 285 300 365];
 vD_ST=[0.87 0.87 1.20 0.97 0.97 0.90 0.50 0.90 0.96 1.30 1.02 1.00 1.45 0.90 0.74 0.78 0.80];
@@ -109,12 +105,11 @@ tP_ST=[0 10 40 50 56 70 92 96 105 175 182 200 265 272 285 300 365];
 vP_ST=[0 55 160 190 250 235 228 150 172 173 260 300 305 150 92 110 110];
 PA_ST=interp1(tP_ST,vP_ST,tgrid,'linear');
 
-%% ============================================================
-%  FIGURAS DE COMPARACION
-% ============================================================
+
+%% FIGURAS DE COMPARACION
 azul=[0.12 0.44 0.70]; rojo=[0.85 0.33 0.31];
 
-% --- FIG 1: ESTIMACION (estados real vs estimado/objetivo) ---
+%  FIG 1: ESTIMACION 
 figure('Color','w','Name','FIG1 Estimacion');
 subplot(3,1,1);
 plot(t,Z_,'--','Color',rojo,'LineWidth',1.2); hold on;
@@ -129,11 +124,11 @@ plot(t,A_,'-','Color',azul,'LineWidth',1.2); hold on;
 plot(t,Aop_,'--','Color',rojo,'LineWidth',1.0); grid on; xlim([0 365]);
 ylabel('A'); xlabel('t [d]'); legend('A medido','A^* objetivo','Location','best'); title('Acetato vs objetivo');
 
-% --- FIG 2: PRODUCCION  (LPV vs optimo vs paper) ---
+%  FIG 2: PRODUCCION  (LPV vs optimo vs paper) 
 figure('Color','w','Name','FIG2 Produccion');
 plot(t,PAmax_,'k-','LineWidth',1.0); hold on;
 plot(tgrid,PA_ST,'--','Color',rojo,'LineWidth',1.2);        % paper ST (digit.)
-plot(t,PA_,'-','Color',azul,'LineWidth',1.3);               % tu LPV
+plot(t,PA_,'-','Color',azul,'LineWidth',1.3);               
 grid on; xlim([0 365]); ylim([0 350]);
 xlabel('t [d]'); ylabel('P_A (mmol L^{-1} d^{-1})');
 legend('P_{A,max} (optimo)','P_{A,ST} (paper, digit.)','P_{A,LPV}','Location','best');

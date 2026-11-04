@@ -1,11 +1,10 @@
-%% =====================================================================
+
 %  COMPARACION DE PERTURBACIONES:  varia Sin   vs   varia Ain
 %  Base: lazo LPV enfoque w (alpha=0.16, ganancias afines).
 %  El controlador SIEMPRE usa Ain_nom=50 (observador y Zop).
 %   - Caso SIN: Ain real = 50 fijo, Sin sigue un perfil.
 %   - Caso AIN: Sin = 60 fijo, Ain real sigue un perfil (mismos % de salto).
-%  Metrica: eficiencia P_A/P_A,max, TV(D), error RMS de A vs objetivo.
-% =====================================================================
+
 clear; clc; close all;
 
 %%  Parametros planta

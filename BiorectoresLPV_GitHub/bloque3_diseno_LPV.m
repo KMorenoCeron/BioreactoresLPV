@@ -1,9 +1,6 @@
 clear; clc; yalmip('clear');
-%% ====================================================================
 %  DISENO CONTROLADOR LPV  -  H-infinito + Region D  (Bloques 3 y 4)
-%  Biorreactor de fermentacion oscura.  Estructura afin / politopica.
-%  --------------------------------------------------------------------
-%  Mismo flujo que el codigo de referencia (sistema de estanques):
+%           Flujo
 %   1. Jacobiano simbolico
 %   2. Parametros y punto de operacion
 %   3. Rangos de los parametros variantes (barrido) -> politopo
@@ -15,8 +12,7 @@ clear; clc; yalmip('clear');
 %
 %  OFFLINE: se corre una vez en PC. Entrega R1,R2 y K0,K1,K2 para
 %  programar el gain scheduling en el PLC (ninguna LMI corre en el PLC).
-%  Requiere YALMIP + ROLMIP + SeDuMi.
-%% ====================================================================
+
 
 %% 1) JACOBIANO SIMBOLICO (solo para mostrar)
 syms sZ sS sA sD sSin sAin s_alpha s_mumax s_kS s_k real

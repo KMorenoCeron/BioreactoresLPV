@@ -1,30 +1,5 @@
 %  BLOQUE 2 - OPTIMIZADOR POR COMBINACION OBSERVABLE w  (validacion)
 
-%  Idea clave: el optimo NO depende de Sin y Ain por separado, solo de
-%  su combinacion  w = Ain + k*Sin, que SI es observable desde A:
-%
-%        A = Ain + k*(Sin - S*)   =>   w = Ain + k*Sin = A + k*S*
-%
-%  Con w se calcula todo el punto de operacion optimo, sin necesitar
-%  conocer Ain (que es una perturbacion desconocida):
-%
-%        D_op = (mu_max/alpha)*(1 - sqrt(k*kS/(w + k*kS)))
-%        A*   = w - k*S*(D_op)
-%        Z*   = (Sin_hat - S*)/alpha   (unica que usa un reparto; solo
-%                                       afecta el transitorio del control)
-%
-%  LIMITE DE WASHOUT: la biomasa se lava si D supera mu_max/alpha=1.9.
-%  Se clampa w a su envelope fisico (mata picos transitorios de w_hat)
-%  y D_op a [D_min, D_max], con D_max < 1.9 por margen, y D_min como
-%  piso de excitacion del observador.
-%
-%  Montaje de la prueba: Ain real FIJO fuera de nominal (=35, desconocido)
-%  y Sin con escalones. Se valida que w_hat sigue a w real y que la
-%  productividad P_A alcanza P_A,max, con D_op siempre lejos del washout.
-%  Sin funciones. Todo inline. Incluye el observador del Bloque 1.
-
-
-
 clear; clc;
 
 %%  Parametros 
