@@ -1,6 +1,6 @@
 # BioreactoresLPV
 
-Control LPV con ubicación de polos en región D para maximizar la productividad de acetato en un proceso de fermentación oscura. Se incluyen las carpetas de **SeDuMi** y **ROLMIP** utilizadas para el diseño del controlador LPV.
+El documento pdf presenta una propuesta de Control LPV con ubicación de polos en región D para maximizar la productividad de acetato en un proceso de fermentación oscura. Se incluyen las carpetas de **SeDuMi** y **ROLMIP** utilizadas para el diseño del controlador LPV.
 
 > **Nota:** La estrategia de control incluida corresponde a una propuesta preliminar que aún no ha sido validada completamente para el sistema. Es necesario verificar su consistencia con el modelo y las condiciones de operación del proceso.
 
